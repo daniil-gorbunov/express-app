@@ -1,18 +1,16 @@
 require('app-module-path').addPath(__dirname + '/');
+
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
-const index = require('./routes/index');
-const users = require('./routes/users');
+const router = require('routes/router');
 
 const app = express();
 
-
 app
-// view engine setup
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'pug')
 
@@ -23,8 +21,7 @@ app
     .use(require('stylus').middleware(path.join(__dirname, 'public')))
     .use(express.static(path.join(__dirname, 'public')))
 
-    .use('/', index)
-    .use('/users', users)
+    .use(router)
 
     // catch 404 and forward to error handler
     .use(function (req, res, next) {
