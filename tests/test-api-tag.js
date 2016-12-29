@@ -5,35 +5,24 @@ const chaiHttp = require('chai-http');
 const server = require('../app');
 const should = chai.should();
 
-const Article = require('../models/article');
+const Tag = require('../models/tag');
 
 chai.use(chaiHttp);
 
-describe('Articles', function () {
+describe('Tags', function () {
 
     beforeEach(function (done) {
-        Article.remove({}, function (err) {
+        Tag.remove({}, function (err) {
             done();
         });
     });
 
-    const apiUrl = '/api/v1/article';
-    const testArticle = {
-        header: 'test article',
-        author: '585e452fe57cdba5f1a57749',
-        content: 'test content',
-        description: 'test description',
-        comments: [{
-            comment: 'anonymous comment'
-        }, {
-            author: 'John Doe',
-            comment: 'comment with author'
-        }],
-        views: 1337,
-        tags: ['585e452fe57cdba5f1a57749', '585e452fe57cdba5f1a57750']
+    const apiUrl = '/api/v1/tag';
+    const testTag = {
+        title: 'Tag 1'
     };
 
-    it('it should receive empty articles list', function (done) {
+    it('it should receive empty tags list', function (done) {
 
         chai.request(server)
             .get(apiUrl)
@@ -46,9 +35,9 @@ describe('Articles', function () {
             .catch(err => console.log(err));
     });
 
-    it('it should fail to create article without required fields', function (done) {
+    it('it should fail to create tag without required fields', function (done) {
 
-        const requiredFields = ['header', 'author', 'content', 'description'];
+        const requiredFields = ['title'];
         chai.request(server)
             .post(apiUrl)
             .send({})
@@ -66,50 +55,50 @@ describe('Articles', function () {
             });
     });
 
-    it('it should create an article and receive it using GET', function (done) {
+    it('it should create a tag and receive it using GET', function (done) {
 
         chai.request(server)
             .post(apiUrl)
-            .send(testArticle)
-            .end ((err, res) => {
+            .send(testTag)
+            .end((err, res) => {
                 res.should.have.status(201);
                 res.body.should.be.a('object');
-                res.body.should.have.property('content').eql(testArticle.content);
+                res.body.should.have.property('title').eql(testTag.title);
                 done();
             });
     });
 
-    it('it should update article', function (done) {
+    it('it should update tag', function (done) {
 
         const patchData = {
-            content: 'content patched',
+            title: 'patched tag',
         };
 
         chai.request(server)
             .post(apiUrl)
-            .send(testArticle)
+            .send(testTag)
             .end((err, res) => {
                 chai.request(server)
                     .patch(`${apiUrl}/${res.body._id}`)
                     .send(patchData)
-                    .end ((err, res) => {
+                    .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.be.a('object');
-                        res.body.should.have.property('content').eql(patchData.content);
+                        res.body.should.have.property('title').eql(patchData.title);
                         done();
                     });
             });
     });
 
-    it('it should delete an article', function (done) {
+    it('it should delete a tag', function (done) {
 
         chai.request(server)
             .post(apiUrl)
-            .send(testArticle)
+            .send(testTag)
             .end((err, res) => {
                 chai.request(server)
                     .delete(`${apiUrl}/${res.body._id}`)
-                    .end ((err, res) => {
+                    .end((err, res) => {
                         res.should.have.status(204);
                         done();
                     });

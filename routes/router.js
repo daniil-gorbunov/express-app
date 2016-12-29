@@ -1,22 +1,33 @@
+const db = require('services/db');
 const router = require('express').Router();
 const restify = require('express-restify-mongoose');
 const ObjectId = require('services/db').Types.ObjectId;
+const Tag = require('models/tag');
 
 router.get('/', require('./index'));
 
+const hydrateAuthor = function (article) {
+    const author = article.author;
+    if (author) {
+        article.author = new ObjectId(author);
+    }
+};
+
+const hydrateTags = function (article) {
+    const tags = article.tags || [];
+    article.tags = tags.map(tag => new ObjectId(tag));
+};
+
 restify.serve(router, require('models/article'), {
     preCreate: function (req, res, next) {
-        const author = req.body.author;
-        req.body.author = new ObjectId(author);
-
-        const tags = req.body.tags || [];
-        req.body.tags = tags.map(tag => new ObjectId(tag));
-
+        hydrateAuthor(req.body);
+        hydrateTags(req.body);
         next();
     },
-
-    postCreate: function (req, res, next) {
-        //TODO find all tags provided in 'tags' field of new article and add new article's ID to theirs 'articles' fields
+    preUpdate: function (req, res, next) {
+        hydrateAuthor(req.body);
+        hydrateTags(req.body);
+        next();
     }
 });
 restify.serve(router, require('models/author'));
