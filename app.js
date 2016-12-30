@@ -1,14 +1,16 @@
 require('app-module-path').addPath(__dirname + '/');
 
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
-
-const router = require('routes/router');
-
-const app = express();
+const
+    bodyParser = require('body-parser'),
+    config = require('./config'),
+    express = require('express'),
+    favicon = require('serve-favicon'),
+    logger = require('morgan'),
+    expressSession = require('express-session'),
+    passport = require('passport'),
+    path = require('path'),
+    router = require('routes/router'),
+    app = express();
 
 app
     .set('views', path.join(__dirname, 'views'))
@@ -20,6 +22,10 @@ app
     .use(bodyParser.urlencoded({extended: false}))
     .use(require('stylus').middleware(path.join(__dirname, 'public')))
     .use(express.static(path.join(__dirname, 'public')))
+
+    .use(expressSession({secret: config.auth.secretKey}))
+    .use(passport.initialize())
+    .use(passport.session())
 
     .use(router)
 

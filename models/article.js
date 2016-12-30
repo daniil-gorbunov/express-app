@@ -1,6 +1,6 @@
 const db = require('services/db');
 
-const Article = db.model('Article', {
+module.exports = db.model('Article', {
     header: {type: String, required: true},
     description: {type: String, required: true},
     content: {type: String, required: true},
@@ -14,5 +14,3 @@ const Article = db.model('Article', {
     }],
     tags: [db.Schema.Types.ObjectId],
 });
-
-module.exports = Article;

@@ -14,5 +14,9 @@ module.exports = {
             usr: 'writer',
             pwd: 'qwe'
         }
+    },
+    auth: {
+        secretKey: 'mySuperSecretKey'
     }
+
 };
