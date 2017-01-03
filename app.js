@@ -36,6 +36,7 @@ app
     .use(passport.session())
 
     .use('/', router)
+    .use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 
     .use(function (req, res, next) {
         let err = new Error('Not Found');
