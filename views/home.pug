@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  div.container
+    div.row
+      div.col-sm-6.col-md-4.col-md-offset-4
+        p Username: #{user.username}
+        p Email: #{user.email}
+        p
+          a.text-center(href='/signout') Sign Out

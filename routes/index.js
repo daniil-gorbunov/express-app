@@ -1,3 +1,3 @@
-module.exports = function (req, res, next) {
-    res.render('index', {title: 'Express'});
+module.exports = function (req, res) {
+    res.render('index', {message: req.flash('message')});
 };

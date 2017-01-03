@@ -9,8 +9,11 @@ const
     expressSession = require('express-session'),
     passport = require('passport'),
     path = require('path'),
-    router = require('routes/router'),
-    app = express();
+    router = require('routes/router')(passport),
+    app = express(),
+    flash = require('connect-flash');
+
+require('services/passport/init')(passport);
 
 app
     .set('views', path.join(__dirname, 'views'))
@@ -22,27 +25,28 @@ app
     .use(bodyParser.urlencoded({extended: false}))
     .use(require('stylus').middleware(path.join(__dirname, 'public')))
     .use(express.static(path.join(__dirname, 'public')))
+    .use(flash())
 
-    .use(expressSession({secret: config.auth.secretKey}))
+    .use(expressSession({
+        secret: config.auth.secretKey,
+        resave: false,
+        saveUninitialized: true
+    }))
     .use(passport.initialize())
     .use(passport.session())
 
-    .use(router)
+    .use('/', router)
 
-    // catch 404 and forward to error handler
     .use(function (req, res, next) {
         let err = new Error('Not Found');
         err.status = 404;
         next(err);
     })
 
-    // error handler
     .use(function (err, req, res, next) {
-        // set locals, only providing error in development
         res.locals.message = err.message;
         res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-        // render the error page
         res.status(err.status || 500);
         res.render('error');
     });
