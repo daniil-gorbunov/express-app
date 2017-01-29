@@ -16,6 +16,11 @@ const
 require('services/passport/init')(passport);
 
 app
+    .use(function(req, res, next) {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        next();
+    })
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'pug')
 
@@ -44,7 +49,7 @@ app
         next(err);
     })
 
-    .use(function (err, req, res, next) {
+    .use(function (err, req, res) {
         res.locals.message = err.message;
         res.locals.error = req.app.get('env') === 'development' ? err : {};
 
