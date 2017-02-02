@@ -5,7 +5,7 @@ const ObjectId = require('services/db').Types.ObjectId;
 const isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated())
         return next();
-    res.send(401);
+    res.sendStatus(401);
 };
 
 const isNotAuthenticated = function (req, res, next) {
