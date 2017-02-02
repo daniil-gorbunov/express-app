@@ -4,7 +4,7 @@ module.exports = db.model('Article', {
     header: {type: String, required: true},
     description: {type: String, required: true},
     content: {type: String, required: true},
-    author: {type: db.Schema.Types.ObjectId, required: true},
+    author: {type: db.Schema.Types.ObjectId, default: '585e452fe57cdba5f1a57749'},
     pub_date: {type: Date, default: Date.now},
     views: {type: Number, default: 0},
     comments: [{
